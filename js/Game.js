@@ -25,6 +25,7 @@ class Game {
         return players;
     }
 
+
     /**
      * Initializes game.
      */
@@ -34,19 +35,42 @@ class Game {
         this.ready = true;
     }
 
+
     /**
-     * Branches code, depending on what key player presses
-     * @param   {Object}    e - Keydown event object
+	 * Branches code, depending on what key player presses
+	 * @param	{Object}	e - Keydown event object
+	 */
+	handleKeydown(e) {
+        if (this.ready) {
+            if (e.key === "ArrowLeft") {
+                this.activePlayer.activeToken.moveLeft();
+            } else if (e.key === "ArrowRight") {
+                this.activePlayer.activeToken.moveRight(this.board.columns);
+            } else if (e.key === "ArrowDown") {
+                this.playToken();
+            }
+        }
+    }
+
+
+    /**
+     * Finds Space object to drop Token into, drops Token
      */
-     handleKeydown(e) {
-       if (this.ready) {
-         if (e.key === "ArrowLeft") {
-           this.activePlayer.activeToken.moveLeft()
-         } else if (e.key === "ArrowRight") {
-           this.activePlayer.activeToken.moveRight(this.board.columns);
-         } else if (e.key === "ArrowDown") {
-           // play token
-         }
-       }
-     }
+    playToken() {
+        let spaces = this.board.spaces;
+        let activeToken = this.activePlayer.activeToken;
+        let targetColumn = spaces[activeToken.columnLocation];
+        let targetSpace = null;
+
+		for (let space of targetColumn) {
+			if (space.token === null) {
+				targetSpace = space;
+			}
+        }
+
+        if (targetSpace !== null) {
+            game.ready = false;
+    		activeToken.drop(targetSpace);
+        }
+    }
 }
